@@ -11,7 +11,9 @@
     "test": "vitest"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.40.1",
     "antd": "^5.18.0",
+    "axios": "^1.7.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.23.1"
@@ -19,6 +21,7 @@
   "devDependencies": {
     "@testing-library/jest-dom": "^6.4.5",
     "@testing-library/react": "^16.0.0",
+    "@types/axios": "^0.14.0",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
     "@typescript-eslint/eslint-plugin": "^7.2.0",
