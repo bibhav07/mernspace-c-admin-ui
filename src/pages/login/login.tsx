@@ -1,6 +1,6 @@
 import { Card, Layout, Space, Form,Input, Checkbox, Button, Flex, Alert } from "antd"
 import {LockFilled, UserOutlined, LockOutlined} from "@ant-design/icons";
-import { Logo } from "../../components/Logo";
+import { Logo } from "../../components/icons/Logo";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Credentials } from "../../types";
 import { login, self, logout } from "../../http/api";

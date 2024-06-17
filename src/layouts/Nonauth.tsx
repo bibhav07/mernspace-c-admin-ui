@@ -10,9 +10,8 @@ const Nonauth = () => {
   }
 
   return (
-    <div>Nonauth
+    <div>
             <Outlet/>
-
     </div>
   )
 }
