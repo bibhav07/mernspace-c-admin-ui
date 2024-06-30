@@ -1,4 +1,4 @@
-import { Breadcrumb, Button, Drawer, Space, Table } from "antd";
+import { Breadcrumb, Button, Drawer, Form, Space, Table, theme } from "antd";
 import { RightOutlined, PlusOutlined } from "@ant-design/icons";
 import { Link, Navigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -7,6 +7,7 @@ import { User } from "../../types";
 import { useAuthStore } from "../../store";
 import UsersFilter from "./UsersFilter";
 import { useState } from "react";
+import UserForms from "./forms/UserForms";
 
 const columns = [
   {
@@ -51,6 +52,10 @@ const columns = [
 ];
 
 const Users = () => {
+  const {
+    token: { colorBgLayout },
+  } = theme.useToken();
+
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   const {
@@ -109,6 +114,7 @@ const Users = () => {
           width={730}
           destroyOnClose={true}
           open={drawerOpen}
+          styles={{ body: { backgroundColor: colorBgLayout } }}
           extra={
             <Space>
               <Button
@@ -126,8 +132,9 @@ const Users = () => {
             console.log("drawer closed!");
           }}
         >
-          <p>paragraph</p>
-          <p>paragraph</p>
+          <Form layout="vertical">
+            <UserForms />
+          </Form>
         </Drawer>
       </Space>
     </>
