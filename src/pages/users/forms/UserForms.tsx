@@ -18,17 +18,48 @@ function UserForms() {
           <Card title={"Basic info"} bordered={false}>
             <Row gutter={20}>
               <Col span={12}>
-                <Form.Item label="First name" name="firstName">
+                <Form.Item
+                  label="First name"
+                  name="firstName"
+                  rules={[
+                    {
+                      required: true,
+                      message: "First name is required",
+                    },
+                  ]}
+                >
                   <Input />
                 </Form.Item>
               </Col>
               <Col span={12}>
-                <Form.Item label="Last name" name="lastName">
+                <Form.Item
+                  label="Last name"
+                  name="lastName"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Last name is required",
+                    },
+                  ]}
+                >
                   <Input />
                 </Form.Item>
               </Col>
               <Col span={12}>
-                <Form.Item label="Email" name="email">
+                <Form.Item
+                  label="Email"
+                  name="email"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Email is required",
+                    },
+                    {
+                      type: "email",
+                      message: "Enter valid email",
+                    },
+                  ]}
+                >
                   <Input />
                 </Form.Item>
               </Col>
@@ -38,7 +69,16 @@ function UserForms() {
           <Card title={"Security info"} bordered={false}>
             <Row gutter={20}>
               <Col span={12}>
-                <Form.Item label="Password" name="password">
+                <Form.Item
+                  label="Password"
+                  name="password"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Password is required",
+                    },
+                  ]}
+                >
                   <Input size="large" type="password" />
                 </Form.Item>
               </Col>
@@ -48,7 +88,11 @@ function UserForms() {
           <Card title={"Role & resturant"} bordered={false}>
             <Row gutter={20}>
               <Col span={12}>
-                <Form.Item label="Role" name="role">
+                <Form.Item
+                  label="Role"
+                  name="role"
+                  rules={[{ required: true, message: "Role is required" }]}
+                >
                   <Select allowClear={true}>
                     <Select.Option value="admin">Admin</Select.Option>
                     <Select.Option value="manager">Manager</Select.Option>
@@ -57,7 +101,11 @@ function UserForms() {
                 </Form.Item>
               </Col>
               <Col span={12}>
-                <Form.Item label="Restaurant" name="tenandId">
+                <Form.Item
+                  label="Restaurant"
+                  name="tenandId"
+                  rules={[{ required: true, message: "Resturant is required" }]}
+                >
                   <Select allowClear={true}>
                     {tenants?.map((tenant: Tenant) => (
                       <Select.Option value={tenant.id}>
