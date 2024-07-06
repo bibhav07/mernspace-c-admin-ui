@@ -1,9 +1,9 @@
 import { Breadcrumb, Button, Drawer, Form, Space, Table, theme } from "antd";
 import { RightOutlined, PlusOutlined } from "@ant-design/icons";
 import { Link, Navigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { getusers } from "../../http/api";
-import { User } from "../../types";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { createUser, getusers } from "../../http/api";
+import { CreateUserData, User } from "../../types";
 import { useAuthStore } from "../../store";
 import UsersFilter from "./UsersFilter";
 import { useState } from "react";
@@ -52,6 +52,9 @@ const columns = [
 ];
 
 const Users = () => {
+  const [form] = Form.useForm();
+  const queryClient = useQueryClient();
+
   const {
     token: { colorBgLayout },
   } = theme.useToken();
@@ -69,6 +72,24 @@ const Users = () => {
       return getusers().then((res) => res.data);
     },
   });
+
+  const { mutate: userMutate } = useMutation({
+    mutationKey: ["user"],
+    mutationFn: async (data: CreateUserData) =>
+      createUser(data).then((res) => res.data),
+    onSuccess: async () => {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+      console.log("success bro~");
+    },
+  });
+
+  const onHandleSubmit = async () => {
+    await form.validateFields();
+    console.log("form values", form.getFieldsValue());
+    await userMutate(form.getFieldsValue());
+    form.resetFields();
+    setDrawerOpen(false);
+  };
 
   const { user } = useAuthStore();
 
@@ -115,24 +136,27 @@ const Users = () => {
           destroyOnClose={true}
           open={drawerOpen}
           styles={{ body: { backgroundColor: colorBgLayout } }}
+          onClose={() => {
+            form.resetFields();
+            setDrawerOpen(false);
+          }}
           extra={
             <Space>
               <Button
                 onClick={() => {
+                  form.resetFields();
                   setDrawerOpen(false);
                 }}
               >
                 Cancel
               </Button>
-              <Button type="primary">Submit</Button>
+              <Button type="primary" onClick={onHandleSubmit}>
+                Submit
+              </Button>
             </Space>
           }
-          onClose={() => {
-            setDrawerOpen(false);
-            console.log("drawer closed!");
-          }}
         >
-          <Form layout="vertical">
+          <Form layout="vertical" form={form}>
             <UserForms />
           </Form>
         </Drawer>
