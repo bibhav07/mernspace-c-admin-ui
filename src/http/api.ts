@@ -9,6 +9,7 @@ export const login = (credentials: Credentials) =>
 
 export const self = () => api.get("/auth/self");
 export const logout = () => api.post(`/auth/logout`);
-export const getusers = () => api.get("/users");
+export const getusers = (queryString: string) =>
+  api.get(`/users?${queryString}`);
 export const getTenants = () => api.get("/tenants");
 export const createUser = (user: CreateUserData) => api.post("/users", user);
