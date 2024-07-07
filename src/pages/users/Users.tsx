@@ -18,7 +18,7 @@ import {
 import { Link, Navigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createUser, getusers } from "../../http/api";
-import { CreateUserData, User } from "../../types";
+import { CreateUserData, FieldData, User } from "../../types";
 import { useAuthStore } from "../../store";
 import UsersFilter from "./UsersFilter";
 import { useState } from "react";
@@ -69,6 +69,8 @@ const columns = [
 
 const Users = () => {
   const [form] = Form.useForm();
+  const [filterForm] = Form.useForm();
+
   const queryClient = useQueryClient();
 
   const {
@@ -90,10 +92,18 @@ const Users = () => {
   } = useQuery({
     queryKey: ["users", queryParams],
     queryFn: () => {
+      // console.log("raw query params -> ", queryParams);
+      //using object.entires so our values will be like [ [key,value],[key,value],]
+      //checking if value on index 1 is fals do not take it (undefined, false, null)
+      const filteredParams = Object.fromEntries(
+        Object.entries(queryParams).filter((item) => !!item[1])
+      );
+
       //it will make query params -> perPage=2&currentPage=1
       const queryString = new URLSearchParams(
-        queryParams as unknown as Record<string, string>
+        filteredParams as unknown as Record<string, string>
       ).toString();
+
       // console.log(queryString);
       return getusers(queryString).then((res) => res.data);
     },
@@ -105,7 +115,6 @@ const Users = () => {
       createUser(data).then((res) => res.data),
     onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
-      console.log("success bro~");
     },
   });
 
@@ -118,6 +127,18 @@ const Users = () => {
   };
 
   const { user } = useAuthStore();
+
+  const onFilterchange = (changedFields: FieldData[]) => {
+    const changedFilterFields = changedFields
+      .map((item) => {
+        return {
+          [item.name[0]]: item.value,
+        };
+      })
+      .reduce((acc, item) => ({ ...acc, ...item }), {});
+    //all onchanged values setting in the usestate
+    setQueryParams((prev) => ({ ...prev, ...changedFilterFields }));
+  };
 
   if (user?.role !== "admin") {
     return <Navigate to="/" replace={true} />;
@@ -145,22 +166,19 @@ const Users = () => {
           )}
         </Flex>
 
-        <UsersFilter
-          onFilterChange={(filterName: string, filterValue: string) => {
-            console.log(filterName);
-            console.log(filterValue);
-          }}
-        >
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            onClick={() => {
-              setDrawerOpen(true);
-            }}
-          >
-            Add User
-          </Button>
-        </UsersFilter>
+        <Form form={filterForm} onFieldsChange={onFilterchange}>
+          <UsersFilter>
+            <Button
+              type="primary"
+              icon={<PlusOutlined />}
+              onClick={() => {
+                setDrawerOpen(true);
+              }}
+            >
+              Add User
+            </Button>
+          </UsersFilter>
+        </Form>
 
         <Table
           columns={columns}
